@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planejamento Terapêutico · Fonoaudiologia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+ 
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+          <circle cx="7" cy="12" r="1" fill="#1D9E75"/><circle cx="12" cy="7" r="1" fill="#1D9E75"/><circle cx="17" cy="12" r="1" fill="#1D9E75"/>
+        </svg>
+      </div>
+      <div>
+        <div class="header-title">Planejamento Terapêutico</div>
+        <div class="header-sub">Fonoaudiologia</div>
+        <div class="header-badge">PBE · Prática Baseada em Evidências</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+      <button class="btn-novo-paciente" onclick="novosPaciente()" title="Limpar tudo e iniciar um novo paciente">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Novo paciente
+      </button>
+      <div class="save-indicator" id="save-indicator">
+        <span class="save-dot"></span>
+        <span id="save-text">Rascunho salvo</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Patient data -->
+  <div class="card">
+    <div class="sec-label">Dados do paciente e sessão</div>
+    <div class="field-grid">
+      <div class="field-group"><label>Nome do paciente</label><input type="text" id="nome" placeholder="Nome completo" autocomplete="off"></div>
+      <div class="field-group"><label>Idade</label><input type="text" id="idade" placeholder="Ex: 5a 3m" autocomplete="off"></div>
+      <div class="field-group"><label>Data</label><input type="date" id="data"></div>
+      <div class="field-group"><label>Fonoaudióloga</label><input type="text" id="fono" placeholder="Nome da profissional" autocomplete="off"></div>
+      <div class="field-group"><label>Responsável</label><input type="text" id="responsavel" placeholder="Nome" autocomplete="off"></div>
+      <div class="field-group"><label>Sessões / semana</label><input type="number" id="sessao-semana" placeholder="Ex: 2" min="0" autocomplete="off"></div>
+      <div class="field-group"><label>CRFa</label><input type="text" id="crfa" placeholder="Ex: 12345-SP" autocomplete="off"></div>
+      <div class="field-group"><label>CID / Hipótese Diagnóstica</label><input type="text" id="cid" placeholder="Ex: F80.0 – Desvio Fonológico" autocomplete="off"></div>
+    </div>
+  </div>
+
+  <!-- Symptom selector V2 -->
+  <div class="card">
+    <div class="sec-label">Sintomas Clínicos Observáveis</div>
+
+    <!-- Search -->
+    <div class="search-wrap">
+      <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="sintoma-search" class="search-input" placeholder="Buscar sintoma clínico..." autocomplete="off">
+      <button class="search-clear" id="search-clear" title="Limpar busca">&times;</button>
+    </div>
+
+    <!-- Category tabs -->
+    <div class="cat-tabs" id="cat-tabs"></div>
+
+    <!-- Category panels -->
+    <div class="cat-panels" id="cat-panels">
+      <div class="no-results-msg" id="no-results-msg">Nenhum sintoma encontrado para "<span id="no-results-query"></span>"</div>
+    </div>
+
+    <!-- Selection bar -->
+    <div class="sel-bar">
+      <div class="sel-info">
+        <div class="sel-pips" id="sel-pips"></div>
+        <span id="sel-text" style="color:var(--text3)">Nenhum sintoma selecionado</span>
+      </div>
+      <button class="btn-clear" onclick="limparSelecao()">Limpar seleção</button>
+    </div>
+  </div>
+
+  <div class="gen-row">
+    <button class="btn-gen" id="btn-gen" onclick="gerarPlano()">
+      <span class="btn-gen-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </span>
+      Gerar planejamento
+    </button>
+  </div>
+
+  <div id="plano-section">
+
+    <!-- Print-only fono header -->
+    <div class="print-fono-header" id="print-fono-header" style="display:none">
+      <div>
+        <div class="print-fono-name" id="print-fono-name"></div>
+        <div class="print-fono-sub">Fonoaudióloga · Plano Terapêutico Fonoaudiológico</div>
+      </div>
+      <div class="print-logo-mark">🗣</div>
+    </div>
+
+    <div class="session-strip">
+      <div class="strip-accent"></div>
+      <div class="strip-content" id="strip-content"></div>
+    </div>
+
+    <div class="fono-banner" id="fono-banner">
+      <div class="fono-banner-left">
+        <div class="fono-avatar" id="fono-avatar">?</div>
+        <div>
+          <div class="fono-name" id="fono-banner-name">—</div>
+          <div class="fono-cred">Fonoaudióloga responsável</div>
+        </div>
+      </div>
+      <div class="fono-badge" id="fono-badge">PTF</div>
+    </div>
+
+    <div class="action-bar">
+      <div class="edit-hint">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Clique em qualquer célula para editar
+      </div>
+      <div>
+        <button class="btn-print" onclick="printSection('plano-section')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Imprimir acompanhamento
+        </button>
+        <button class="btn-print" onclick="gerarRelatorioProfissional()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg>
+          Gerar relatório profissional
+        </button>
+      </div>
+    </div>
+
+    <div class="table-wrap" id="table-wrap">
+      <div class="scroll-hint" id="scroll-hint">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      <div class="tbl-scroll" id="tbl-scroll">
+        <table class="plano-table" id="tabela-plano">
+          <thead>
+            <tr>
+              <th style="min-width:120px">Área</th>
+              <th style="min-width:170px">Sintomas observados</th>
+              <th style="min-width:170px">Objetivos — Curto Prazo</th>
+              <th style="min-width:170px">Objetivos — Longo Prazo</th>
+              <th style="min-width:200px">Estratégias</th>
+              <th style="min-width:110px">Frequência</th>
+              <th style="min-width:180px">Prática domiciliar</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="obs-card">
+      <div class="sec-label">Observações da sessão</div>
+      <textarea class="obs-textarea" id="obs" rows="3" placeholder="Comportamento, engajamento, resposta às atividades, orientações ao responsável..."></textarea>
+    </div>
+
+    <div class="sign-block" id="sign-block">
+      <div class="sign-row">
+        <div class="sign-col">
+          <div class="sign-line"></div>
+          <div class="sign-name-text" id="sign-name-text"></div>
+          <div class="sign-title-text">Fonoaudióloga</div>
+          <div class="sign-crfa" id="sign-crfa-text">CRFa: _______________</div>
+        </div>
+        <div class="sign-col">
+          <div class="sign-line"></div>
+          <div class="sign-title-text">Responsável / Guardião(a)</div>
+          <div class="sign-crfa" id="sign-resp-name"></div>
+        </div>
+        <div class="sign-col" style="margin-left:auto">
+          <div class="sign-date" id="sign-date-text"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /plano-section -->
+
+  <div class="card" id="prof-section" style="display:none; margin-top:1.25rem;">
+    <div class="sec-label">Relatório profissional</div>
+    <div class="action-bar" style="margin-bottom:1rem;">
+      <div class="pro-report-summary">Relatório sintético para profissionais, com objetivos e estratégias resumidas.</div>
+      <button class="btn-print" onclick="printSection('prof-section')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Imprimir relatório profissional
+      </button>
+    </div>
+    <div id="prof-report"></div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-text">PTF · Protocolo Terapêutico Fonoaudiológico · V2</div>
+    <div class="footer-mark"><span class="footer-dot"></span>Uso clínico pessoal</div>
+  </footer>
+
+</div><!-- /wrap -->
+
+<!-- Toast de feedback -->
+<div id="toast" class="toast" role="alert" aria-live="assertive"></div>
+
+<!-- Toda a lógica e os dados ficam em js/ e data/. Não edite aqui. -->
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>
