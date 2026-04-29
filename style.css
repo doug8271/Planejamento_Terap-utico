@@ -730,7 +730,7 @@
     }
 
     /* ── Mobile ── */
-    @media (max-width: 640px) {
+    @media (max-width: 640px) and (not print) {
       .wrap { padding: 1.25rem 1rem 3rem; }
       .header { flex-direction: column; gap: .75rem; }
       .strip-content { flex-direction: column; gap: .375rem; }
