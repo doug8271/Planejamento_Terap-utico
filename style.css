@@ -643,7 +643,7 @@
     /* ── PRINT ── */
     @page { margin: 1.5cm; }
     @media print {
-      body { background: #fff !important; font-size: 10pt; }
+      body { background: #fff !important; font-size: 10pt; orphans: 2; widows: 2; }
       body::before { display: none !important; }
       .wrap { padding: 0 !important; max-width: 100% !important; }
       .header, .gen-row, .sel-bar, .footer,
@@ -710,7 +710,7 @@
       body.print-prof #prof-section  { display: block !important; }
       body.print-prof .prof-print-header {
         display: flex !important; justify-content: space-between; align-items: flex-start;
-        margin-bottom: 1.25rem; padding-bottom: .875rem;
+        margin-bottom: 1rem; padding-bottom: .75rem;
         border-bottom: 2pt solid #1D9E75;
         print-color-adjust: exact; -webkit-print-color-adjust: exact;
       }
@@ -718,8 +718,10 @@
       body.print-prof .prof-print-subtitle { font-size: 8.5pt; color: #5A5450; margin-top: 2pt; }
       body.print-prof .prof-print-fono  { font-size: 11pt; font-weight: 600; color: #0E3326; text-align: right; }
       body.print-prof .prof-print-crfa  { font-size: 8.5pt; color: #5A5450; text-align: right; }
+      body.print-prof .prof-intro { margin-bottom: 0.75rem !important; }
+      body.print-prof .prof-closing { margin-top: 0.75rem !important; margin-bottom: 0.5rem !important; padding-top: 0.5rem !important; }
       body.print-prof .prof-area-block  {
-        page-break-inside: avoid; break-inside: avoid;
+        break-inside: avoid;
         border-left-color: #1D9E75 !important;
         print-color-adjust: exact; -webkit-print-color-adjust: exact;
       }
